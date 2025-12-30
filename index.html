@@ -14,9 +14,9 @@ body.hide-cursor{cursor:none}
 #hud{position:fixed;top:8px;left:50%;transform:translateX(-50%);color:#0f0;background:rgba(0,0,0,.55);padding:6px 14px;border-radius:12px;font-size:13px;z-index:5}
 #crosshair{position:fixed;left:50%;top:50%;width:10px;height:10px;margin:-5px;border:2px solid #fff;border-radius:50%;z-index:5}
 
-#menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#111,#000);z-index:20}
+#menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#111,#000);z-index:20;pointer-events:auto}
 #menu.hidden{display:none}
-#menuBox{color:#0f0;background:rgba(0,0,0,.8);border:2px solid #0f0;border-radius:18px;padding:28px;width:360px;text-align:center}
+#menuBox{color:#0f0;background:rgba(0,0,0,.85);border:2px solid #0f0;border-radius:18px;padding:28px;width:380px;text-align:center;pointer-events:auto}
 #menuBox button{width:100%;padding:14px;margin-top:14px;font-size:16px}
 
 #mobileUI{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}
@@ -39,7 +39,20 @@ body.hide-cursor{cursor:none}
 <div id="menu">
   <div id="menuBox">
     <h2>⚔ COMBAT ARENA</h2>
-    <div>FLAGSHIP PHONES ONLY</div>
+    <div>FLAGSHIP MODE • ULTRA GRAPHICS</div>
+    <button id="btnPlay">▶ PLAY</button>
+    <button id="btnShop">🛒 WEAPON SHOP</button>
+    <button id="btnPractice">🎯 PRACTICE MODE</button>
+    <div id="shop" style="display:none;margin-top:16px;text-align:left">
+      <h3>Weapon Shop</h3>
+      <ul>
+        <li>Rifle – 500 Gold</li>
+        <li>Sniper – 900 Gold</li>
+        <li>Shotgun – 700 Gold</li>
+      </ul>
+      <button id="btnBack">⬅ Back</button>
+    </div>
+  </div>
     <button id="btnPlay">▶ PLAY</button>
   </div>
 </div>
@@ -186,8 +199,17 @@ setupJoy(document.getElementById('joyRight'),(x,y)=>{yaw-=x*0.05;pitch-=y*0.05})
 
 document.querySelector('.jumpBtn').addEventListener('touchstart',()=>{if(grounded){velY=1.0;grounded=false}});
 
-const btnPlay = document.getElementById('btnPlay');
-const menu = document.getElementById('menu');
+const btnPlay=document.getElementById('btnPlay');
+const btnShop=document.getElementById('btnShop');
+const btnPractice=document.getElementById('btnPractice');
+const btnBack=document.getElementById('btnBack');
+const menu=document.getElementById('menu');
+const shop=document.getElementById('shop');
+
+btnPlay.onclick=()=>{menu.classList.add('hidden')};
+btnShop.onclick=()=>{shop.style.display='block'};
+btnBack.onclick=()=>{shop.style.display='none'};
+btnPractice.onclick=()=>{menu.classList.add('hidden')};
 btnPlay.onclick = () => {
   menu.classList.add('hidden');
 };
