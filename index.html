@@ -57,24 +57,45 @@ body.hide-cursor{cursor:none}
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script>
 /* =====================================================
-   FLAGSHIP MOBILE GATE
+   FLAGSHIP MOBILE GATE (AUTO-DETECT + USER CONFIRM)
 ===================================================== */
-const ua=navigator.userAgent;
-const isMobile=/Android|iPhone|iPad|iPod/i.test(ua);
-const isFlagship =
-  /A16|A17|A18|Apple M|Snapdragon 8|Exynos 2200|Exynos 2300|Exynos 2400|SM-S908/i
-  .test(navigator.userAgent);
+const ua = navigator.userAgent;
+const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
 
-if(isMobile && !isFlagship){
-  const b=document.getElementById('blocker');
-  b.style.display='flex';
-  b.innerHTML=`
+// Known flagship patterns (includes S22 Ultra)
+let isFlagship = /A16|A17|A18|Apple M|Snapdragon 8|Exynos 2200|Exynos 2300|Exynos 2400|SM-S908/i.test(ua);
+
+// If mobile but not clearly detected, ASK USER
+if (isMobile && !isFlagship) {
+  const model = prompt(
+    '⚠ Device check
+
+We could not detect your phone model automatically.
+
+Please enter your phone model (example: S22 Ultra, iPhone 15 Pro):'
+  );
+
+  if (model) {
+    // Allow known flagship names typed by user
+    if (/S22 Ultra|S23|S24|Ultra|iPhone 14|iPhone 15|Pro|Snapdragon 8|Exynos 2200/i.test(model)) {
+      isFlagship = true;
+    }
+  }
+}
+
+// Final block if still not flagship
+if (isMobile && !isFlagship) {
+  const b = document.getElementById('blocker');
+  b.style.display = 'flex';
+  b.innerHTML = `
     <h2>⚠ Device Not Supported</h2>
-    <p>This game only runs on flagship phones.</p>
-    <small>Required: Snapdragon 8 Gen series / Apple A16+ / Exynos 2200+</small>
+    <p>This game requires a flagship phone.</p>
+    <small>Try: Galaxy S22 Ultra / S23 / S24 / iPhone Pro models</small>
   `;
   throw new Error('Non-flagship mobile blocked');
 }
+
+if (isMobile) document.getElementById('mobileUI').style.display = 'block';
 
 if(isMobile){document.getElementById('mobileUI').style.display='block'}
 
