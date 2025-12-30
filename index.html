@@ -14,9 +14,9 @@ body.hide-cursor{cursor:none}
 #hud{position:fixed;top:8px;left:50%;transform:translateX(-50%);color:#0f0;background:rgba(0,0,0,.55);padding:6px 14px;border-radius:12px;font-size:13px;z-index:5}
 #crosshair{position:fixed;left:50%;top:50%;width:10px;height:10px;margin:-5px;border:2px solid #fff;border-radius:50%;z-index:5}
 
-#menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#111,#000);z-index:20;pointer-events:auto}
+#menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#111,#000);z-index:50;pointer-events:auto;position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#111,#000);z-index:20;pointer-events:auto}
 #menu.hidden{display:none}
-#menuBox{color:#0f0;background:rgba(0,0,0,.85);border:2px solid #0f0;border-radius:18px;padding:28px;width:380px;text-align:center;pointer-events:auto}
+#menuBox{color:#0f0;background:rgba(0,0,0,.85);border:2px solid #0f0;border-radius:18px;padding:28px;width:380px;text-align:center;pointer-events:auto;color:#0f0;background:rgba(0,0,0,.85);border:2px solid #0f0;border-radius:18px;padding:28px;width:380px;text-align:center;pointer-events:auto}
 #menuBox button{width:100%;padding:14px;margin-top:14px;font-size:16px}
 
 #mobileUI{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}
@@ -28,7 +28,8 @@ body.hide-cursor{cursor:none}
 .jumpBtn{position:absolute;right:120px;bottom:170px;width:70px;height:70px;border-radius:50%;background:rgba(0,150,255,.4);pointer-events:auto}
 
 @media (orientation:portrait){
-  body::before{content:'Rotate device to landscape';position:fixed;inset:0;background:#000;color:#0f0;display:flex;align-items:center;justify-content:center;font-size:20px;z-index:998}
+  body::before{content:'Rotate device to landscape';position:fixed;inset:0;background:#000;color:#0f0;display:flex;align-items:center;justify-content:center;font-size:20px;z-index:5;pointer-events:none}
+}
 }
 </style>
 </head>
@@ -105,7 +106,8 @@ if (isMobile && !isFlagship) {
     <p>This game requires a flagship phone.</p>
     <small>Try: Galaxy S22 Ultra / S23 / S24 / iPhone Pro models</small>
   `;
-  throw new Error('Non-flagship mobile blocked');
+  // stop execution without killing UI
+return;
 }
 
 if (isMobile) document.getElementById('mobileUI').style.display = 'block';
@@ -206,7 +208,7 @@ const btnBack=document.getElementById('btnBack');
 const menu=document.getElementById('menu');
 const shop=document.getElementById('shop');
 
-btnPlay.onclick=()=>{menu.classList.add('hidden')};
+btnPlay.addEventListener('click',()=>{menu.classList.add('hidden')});
 btnShop.onclick=()=>{shop.style.display='block'};
 btnBack.onclick=()=>{shop.style.display='none'};
 btnPractice.onclick=()=>{menu.classList.add('hidden')};
