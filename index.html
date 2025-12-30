@@ -61,7 +61,9 @@ body.hide-cursor{cursor:none}
 ===================================================== */
 const ua=navigator.userAgent;
 const isMobile=/Android|iPhone|iPad|iPod/i.test(ua);
-const isFlagship=/A16|A17|A18|Snapdragon 8 Gen|Exynos 2200|Exynos 2400|Apple M/i.test(ua);
+const isFlagship =
+  /A16|A17|A18|Apple M|Snapdragon 8|Exynos 2200|Exynos 2300|Exynos 2400|SM-S908/i
+  .test(navigator.userAgent);
 
 if(isMobile && !isFlagship){
   const b=document.getElementById('blocker');
