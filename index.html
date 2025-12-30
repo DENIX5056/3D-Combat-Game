@@ -186,7 +186,11 @@ setupJoy(document.getElementById('joyRight'),(x,y)=>{yaw-=x*0.05;pitch-=y*0.05})
 
 document.querySelector('.jumpBtn').addEventListener('touchstart',()=>{if(grounded){velY=1.0;grounded=false}});
 
-btnPlay.onclick=()=>menu.classList.add('hidden');
+const btnPlay = document.getElementById('btnPlay');
+const menu = document.getElementById('menu');
+btnPlay.onclick = () => {
+  menu.classList.add('hidden');
+};
 
 function animate(){
   requestAnimationFrame(animate);
