@@ -2,234 +2,74 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>CRAZY 3D FPS GAME – FLAGSHIP ONLY EDITION</title>
+<title>COMBAT ARENA – UI DEBUG FIX</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <style>
 html,body{margin:0;overflow:hidden;background:#000;font-family:Arial}
-body.hide-cursor{cursor:none}
 
-#blocker{position:fixed;inset:0;background:#000;color:#0f0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:999;font-size:18px;padding:20px}
-#blocker small{opacity:.7;margin-top:10px}
-
-#hud{position:fixed;top:8px;left:50%;transform:translateX(-50%);color:#0f0;background:rgba(0,0,0,.55);padding:6px 14px;border-radius:12px;font-size:13px;z-index:5}
-#crosshair{position:fixed;left:50%;top:50%;width:10px;height:10px;margin:-5px;border:2px solid #fff;border-radius:50%;z-index:5}
-
-#menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#111,#000);z-index:50;pointer-events:auto;position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#111,#000);z-index:20;pointer-events:auto}
+/* ===== MENU (ABSOLUTE TOP, CLICKABLE) ===== */
+#menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);z-index:9999;pointer-events:auto}
 #menu.hidden{display:none}
-#menuBox{color:#0f0;background:rgba(0,0,0,.85);border:2px solid #0f0;border-radius:18px;padding:28px;width:380px;text-align:center;pointer-events:auto;color:#0f0;background:rgba(0,0,0,.85);border:2px solid #0f0;border-radius:18px;padding:28px;width:380px;text-align:center;pointer-events:auto}
-#menuBox button{width:100%;padding:14px;margin-top:14px;font-size:16px}
+#menuBox{background:#111;border:3px solid #0f0;border-radius:16px;padding:30px;width:320px;text-align:center;pointer-events:auto}
+#menuBox button{width:100%;padding:16px;margin-top:14px;font-size:18px;cursor:pointer}
 
-#mobileUI{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}
-.joystick{position:absolute;bottom:20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:auto}
-#joyLeft{left:20px}
-#joyRight{right:20px}
-.joyKnob{position:absolute;left:40px;top:40px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.35)}
-.fireBtn{position:absolute;right:30px;bottom:170px;width:70px;height:70px;border-radius:50%;background:rgba(255,0,0,.4);pointer-events:auto}
-.jumpBtn{position:absolute;right:120px;bottom:170px;width:70px;height:70px;border-radius:50%;background:rgba(0,150,255,.4);pointer-events:auto}
+/* ===== HUD ===== */
+#hud{position:fixed;top:10px;left:50%;transform:translateX(-50%);color:#0f0;z-index:1}
+#crosshair{position:fixed;left:50%;top:50%;width:8px;height:8px;margin:-4px;border:2px solid #fff;border-radius:50%;z-index:1}
+
+/* ===== MOBILE CONTROLS (BELOW MENU) ===== */
+#mobileUI{position:fixed;inset:0;z-index:1;pointer-events:none}
 
 @media (orientation:portrait){
-  body::before{content:'Rotate device to landscape';position:fixed;inset:0;background:#000;color:#0f0;display:flex;align-items:center;justify-content:center;font-size:20px;z-index:5;pointer-events:none}
-}
+  body::before{content:'Rotate device to landscape';position:fixed;inset:0;background:#000;color:#0f0;display:flex;align-items:center;justify-content:center;font-size:20px;z-index:5000;pointer-events:none}
 }
 </style>
 </head>
-<body class="hide-cursor">
+<body>
 
-<div id="blocker" style="display:none"></div>
-
+<!-- MENU -->
 <div id="menu">
   <div id="menuBox">
     <h2>⚔ COMBAT ARENA</h2>
-    <div>FLAGSHIP MODE • ULTRA GRAPHICS</div>
+    <p>UI CLICK DEBUG MODE</p>
     <button id="btnPlay">▶ PLAY</button>
     <button id="btnShop">🛒 WEAPON SHOP</button>
-    <button id="btnPractice">🎯 PRACTICE MODE</button>
-    <div id="shop" style="display:none;margin-top:16px;text-align:left">
-      <h3>Weapon Shop</h3>
-      <ul>
-        <li>Rifle – 500 Gold</li>
-        <li>Sniper – 900 Gold</li>
-        <li>Shotgun – 700 Gold</li>
-      </ul>
-      <button id="btnBack">⬅ Back</button>
-    </div>
-  </div>
-    <button id="btnPlay">▶ PLAY</button>
   </div>
 </div>
 
-<div id="hud">FLAGSHIP MODE • ULTRA SHADERS</div>
+<div id="hud">HUD ACTIVE</div>
 <div id="crosshair"></div>
+<div id="mobileUI"></div>
 
-<div id="mobileUI">
-  <div id="joyLeft" class="joystick"><div class="joyKnob"></div></div>
-  <div id="joyRight" class="joystick"><div class="joyKnob"></div></div>
-  <div class="fireBtn"></div>
-  <div class="jumpBtn"></div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script>
-/* =====================================================
-   FLAGSHIP MOBILE GATE (AUTO-DETECT + USER CONFIRM)
-===================================================== */
-const ua = navigator.userAgent;
-const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
+// ===== EXPLICIT ELEMENT BINDING =====
+const menu = document.getElementById('menu');
+const btnPlay = document.getElementById('btnPlay');
+const btnShop = document.getElementById('btnShop');
 
-// Known flagship patterns (includes S22 Ultra)
-let isFlagship = /A16|A17|A18|Apple M|Snapdragon 8|Exynos 2200|Exynos 2300|Exynos 2400|SM-S908/i.test(ua);
-
-// If mobile but not clearly detected, ASK USER
-if (isMobile && !isFlagship) {
-  const model = prompt(
-    '⚠ Device check
-
-We could not detect your phone model automatically.
-
-Please enter your phone model (example: S22 Ultra, iPhone 15 Pro):'
-  );
-
-  if (model) {
-    // Allow known flagship names typed by user
-    if (/S22 Ultra|S23|S24|Ultra|iPhone 14|iPhone 15|Pro|Snapdragon 8|Exynos 2200/i.test(model)) {
-      isFlagship = true;
-    }
-  }
-}
-
-// Final block if still not flagship
-if (isMobile && !isFlagship) {
-  const b = document.getElementById('blocker');
-  b.style.display = 'flex';
-  b.innerHTML = `
-    <h2>⚠ Device Not Supported</h2>
-    <p>This game requires a flagship phone.</p>
-    <small>Try: Galaxy S22 Ultra / S23 / S24 / iPhone Pro models</small>
-  `;
-  // stop execution without killing UI
-return;
-}
-
-if (isMobile) document.getElementById('mobileUI').style.display = 'block';
-
-if(isMobile){document.getElementById('mobileUI').style.display='block'}
-
-/* =====================================================
-   SCENE
-===================================================== */
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x0c111a);
-scene.fog=new THREE.FogExp2(0x0c111a,0.001);
-
-const camera=new THREE.PerspectiveCamera(85,innerWidth/innerHeight,0.1,2500);
-camera.position.set(0,4,8);
-
-const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
-renderer.setSize(innerWidth,innerHeight);
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.VSMShadowMap;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.8;
-document.body.appendChild(renderer.domElement);
-
-/* =====================================================
-   LIGHTING (ULTRA)
-===================================================== */
-scene.add(new THREE.AmbientLight(0x404040,0.35));
-const sun=new THREE.DirectionalLight(0xffffff,2.2);
-sun.position.set(600,900,500);
-sun.castShadow=true;
-sun.shadow.mapSize.set(4096,4096);
-scene.add(sun);
-
-/* =====================================================
-   ULTRA STONE TERRAIN SHADER
-===================================================== */
-const stoneMat=new THREE.ShaderMaterial({
-  uniforms:{lightDir:{value:new THREE.Vector3(1,1,1)}},
-  vertexShader:`varying vec3 n;varying vec3 p;void main(){n=normalize(normalMatrix*normal);p=(modelViewMatrix*vec4(position,1.0)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-  fragmentShader:`varying vec3 n;varying vec3 p;uniform vec3 lightDir;float h(vec3 p){return fract(sin(dot(p,vec3(12.9,78.2,45.1)))*43758.5);}void main(){float k=h(p*0.4);float l=max(dot(n,normalize(lightDir)),0.0);vec3 c=vec3(0.5,0.5,0.55)*(0.6+k*0.5);gl_FragColor=vec4(c*(l*1.5+0.25),1.0);}`
+// ===== DEBUG LISTENERS =====
+btnPlay.addEventListener('click', (e) => {
+  e.stopPropagation();
+  alert('PLAY CLICKED');
+  menu.classList.add('hidden');
 });
 
-const size=1400,seg=320;
-const geo=new THREE.PlaneGeometry(size,size,seg,seg);
-geo.rotateX(-Math.PI/2);
-const pos=geo.attributes.position;
-const seed=Math.random()*9999;
-for(let i=0;i<pos.count;i++){
-  const x=pos.getX(i),z=pos.getZ(i);
-  pos.setY(i,Math.sin(x*0.012+seed)*Math.cos(z*0.012+seed)*26+Math.sin(z*0.05)*6);
-}
-geo.computeVertexNormals();
-const terrain=new THREE.Mesh(geo,stoneMat);
-terrain.receiveShadow=true;
-scene.add(terrain);
+btnShop.addEventListener('click', (e) => {
+  e.stopPropagation();
+  alert('SHOP CLICKED');
+});
 
-/* =====================================================
-   ENVIRONMENT (DENSE)
-===================================================== */
-const env=new THREE.Group();scene.add(env);
-function tree(x,z){
-  const t=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.7,7,8),new THREE.MeshStandardMaterial({color:0x5a3a1e}));
-  const l=new THREE.Mesh(new THREE.SphereGeometry(3.2,12,12),new THREE.MeshStandardMaterial({color:0x2f6b3a}));
-  t.position.set(x,3.5,z);l.position.set(x,8,z);
-  t.castShadow=l.castShadow=true;env.add(t,l);
-}
-function house(x,z){
-  const b=new THREE.Mesh(new THREE.BoxGeometry(10,6,10),new THREE.MeshStandardMaterial({color:0x6b6b6b}));
-  const r=new THREE.Mesh(new THREE.ConeGeometry(8,6,4),new THREE.MeshStandardMaterial({color:0x333333}));
-  b.position.set(x,3,z);r.position.set(x,9,z);
-  b.castShadow=r.castShadow=true;env.add(b,r);
-}
-for(let i=0;i<180;i++)tree((Math.random()-0.5)*1000,(Math.random()-0.5)*1000);
-for(let i=0;i<22;i++)house((Math.random()-0.5)*800,(Math.random()-0.5)*800);
-
-/* =====================================================
-   CONTROLS (MOBILE)
-===================================================== */
-let yaw=0,pitch=0,moveX=0,moveZ=0,velY=0,grounded=false;
-const gravity=-0.06,eye=2.0;
-
-function setupJoy(el,cb){
-  let a=false,sx=0,sy=0;const k=el.querySelector('.joyKnob');
-  el.addEventListener('touchstart',e=>{a=true;const t=e.touches[0];sx=t.clientX;sy=t.clientY});
-  el.addEventListener('touchmove',e=>{if(!a)return;const t=e.touches[0];const dx=Math.max(-40,Math.min(40,t.clientX-sx));const dy=Math.max(-40,Math.min(40,t.clientY-sy));k.style.transform=`translate(${dx}px,${dy}px)`;cb(dx/40,dy/40)});
-  el.addEventListener('touchend',()=>{a=false;k.style.transform='translate(0,0)';cb(0,0)});
-}
-setupJoy(document.getElementById('joyLeft'),(x,y)=>{moveX=x;moveZ=y});
-setupJoy(document.getElementById('joyRight'),(x,y)=>{yaw-=x*0.05;pitch-=y*0.05});
-
-document.querySelector('.jumpBtn').addEventListener('touchstart',()=>{if(grounded){velY=1.0;grounded=false}});
-
-const btnPlay=document.getElementById('btnPlay');
-const btnShop=document.getElementById('btnShop');
-const btnPractice=document.getElementById('btnPractice');
-const btnBack=document.getElementById('btnBack');
-const menu=document.getElementById('menu');
-const shop=document.getElementById('shop');
-
-btnPlay.addEventListener('click',()=>{menu.classList.add('hidden')});
-btnShop.onclick=()=>{shop.style.display='block'};
-btnBack.onclick=()=>{shop.style.display='none'};
-btnPractice.onclick=()=>{menu.classList.add('hidden')};
-btnPlay.onclick = () => {
+// Fallback touch handlers (Android safety)
+btnPlay.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  alert('PLAY TOUCH');
   menu.classList.add('hidden');
-};
+});
 
-function animate(){
-  requestAnimationFrame(animate);
-  camera.rotation.set(pitch,yaw,0);
-  camera.translateX(moveX*0.4);
-  camera.translateZ(moveZ*0.4);
-  velY+=gravity;camera.position.y+=velY;
-  if(camera.position.y<eye){camera.position.y=eye;velY=0;grounded=true}
-  sun.position.x=Math.sin(Date.now()*0.00008)*700;
-  sun.position.z=Math.cos(Date.now()*0.00008)*700;
-  renderer.render(scene,camera);
-}
-animate();
-
-window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+btnShop.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  alert('SHOP TOUCH');
+});
 </script>
 </body>
 </html>
